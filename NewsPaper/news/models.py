@@ -1,53 +1,75 @@
 from django.db import models
-
+from django.contrib.auth.models import User
+from django.db.models import Sum
 # Create your models here.
 
-class User(models.Model):
-    pass
+
 
 class Author(models.Model):
-    author_user = models.ForeignKey(User, on_delete=models.CASCADE)
-    rating_author = models.FloatField(default=0.0)
+    author_user = models.OneToOneField(User, on_delete=models.CASCADE)
+    rating_author = models.SmallIntegerField(default=0)
+
+    def update_rating(self):
+        post_rating = self.post_set.aggregate(postRating=Sum('rating'))
+        p_rating = 0
+        p_rating += post_rating.get('postRating')
+
+        comment_rating= self.author_user.comment_set.aggregate(commentRating=Sum('rating'))
+        c_rating = 0
+        c_rating += comment_rating.get('commentRating')
+        self.ratingAuthor = p_rating * 3 + c_rating
+        self.save()
 
 
 class Category(models.Model):
-    name_category = models.CharField(max_length=255, unique=True)
+    name_category = models.CharField(max_length=128, unique=True)
 
 class Post(models.Model):
-    time_in = models.DateTimeField(auto_now_add=True)
+    authors = models.ForeignKey(Author, on_delete=models.CASCADE)
+    NEWS = "NW"
+    ARTICLE = "AR"
+    CATEGORY_CHOICES = (
+        (NEWS, "Новость"),
+        (ARTICLE, "Статья"),
+    )
+    category_type = models.CharField(max_length=2, choices=CATEGORY_CHOICES, default=ARTICLE)
+    data_creation = models.DateTimeField(auto_now_add=True)
+    post_categories = models.ManyToManyField(Category, through='PostCategory')
     article_title = models.CharField(max_length=255)
     text = models.TextField()
-    rating = models.FloatField(default=0.0)
-
-    authors = models.ForeignKey(Author, on_delete=models.CASCADE)
-    categories = models.ManyToManyField(Category, through='PostCategory')
+    rating = models.SmallIntegerField(default=0)
 
     def like(self):
-        return self.rating + 1.0
+        self.rating += 1
+        self.save()
+
 
     def dislike(self):
-        return self.rating - 1.0
+        self.rating -= 1
+        self.save()
 
     def preview(self):
-        return self.text[:125] + "..."
+        return self.text[0:123] + "..."
 
 
 
 class PostCategory(models.Model):
     posts = models.ForeignKey(Post, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    categories = models.ForeignKey(Category, on_delete=models.CASCADE)
 
 class Comment(models.Model):
     comment_post = models.ForeignKey(Post, on_delete=models.CASCADE)
     comment_user = models.ForeignKey(User, on_delete=models.CASCADE)
     text_comment = models.TextField()
-    time_comment = time_in = models.DateTimeField(auto_now_add=True)
-    rating_comment = models.FloatField(default=0.0)
+    dataTime_creation = models.DateTimeField(auto_now_add=True)
+    rating = models.SmallIntegerField(default=0)
 
     def like(self):
-        return self.rating_comment + 1.0
+        self.rating += 1
+        self.save()
 
     def dislike(self):
-        return self.rating_comment - 1.0
+        self.rating -= 1
+        self.save()
 
 
