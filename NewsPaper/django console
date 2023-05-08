@@ -1,0 +1,66 @@
+№1)
+u1 = User.objects.create_user('Boris')
+u2 = User.objects.create_user('Ann')
+
+
+№2)
+Author.objects.create(author_user=u1)
+Author.objects.create(author_user=u2)
+
+
+№3)
+Category.objects.create(name_category="IT")
+Category.objects.create(name_category="Sport")
+Category.objects.create(name_category="Pets")
+Category.objects.create(name_category="School")
+
+
+№4)
+Post.objects.create(authors=author, category_type='NW', article_title='sometitle', text='somebigtext')
+Post.objects.create(authors=author2, category_type='AR', article_title='sometitles', text='sometext')
+Post.objects.create(authors=author, category_type='AR', article_title='sometitles2', text='sometext2')
+
+
+№5)
+Post.objects.get(id=1).post_categories.add(Category.objects.get(id=1))
+Post.objects.get(id=1).post_categories.add(Category.objects.get(id=2))
+Post.objects.get(id=2).post_categories.add(Category.objects.get(id=3))
+Post.objects.get(id=3).post_categories.add(Category.objects.get(id=4))
+
+
+№6)
+Comment.objects.create(comment_post=Post.objects.get(id=1),comment_user=Author.objects.get(id=1).author_user, text_comment='sometextbyauthor')
+Comment.objects.create(comment_post=Post.objects.get(id=1),comment_user=Author.objects.get(id=1).author_user, text_comment='sometextbyauthor2')
+Comment.objects.create(comment_post=Post.objects.get(id=2),comment_user=Author.objects.get(id=1).author_user, text_comment='sometextbyauthor3')
+Comment.objects.create(comment_post=Post.objects.get(id=3),comment_user=Author.objects.get(id=1).author_user, text_comment='sometextbyauthor4')
+
+
+№7)
+Post.objects.get(id=1).like()
+Post.objects.get(id=2).dislike()
+Post.objects.get(id=3).dislike()
+Comment.objects.get(id=1).dislike()
+Comment.objects.get(id=1).dislike()
+Comment.objects.get(id=3).dislike()
+Comment.objects.get(id=4).like()
+
+
+№8)
+Author.objects.get(id=1).update_rating()
+Author.objects.get(id=2).update_rating()
+
+
+№9)
+a = Author.objects.order_by('-rating_author')[:1]
+for i in a:
+    i.rating_author
+    i.author_user.username
+
+
+№10)
+Post.objects.all().order_by('-rating').values('data_creation', 'authors__author_user__username', 'rating', 'article_title').first()
+
+
+№11)
+Post.objects.all().order_by('-rating').first().comment_set.all().values('dataTime_creation', 'comment_user__username', 'rating', 'text_comment').first()
+
