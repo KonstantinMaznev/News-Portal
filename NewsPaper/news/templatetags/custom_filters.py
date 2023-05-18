@@ -13,11 +13,17 @@ text = 'post.text'
 
 @register.filter()
 def censor(text):
-    # list = text.split()
-    # censor_list = []
-    # for word in list:
-    #     t1 = []
-    #     if t1 in BAD_WORDS:
-    pass
+    list = text.split()
+    censor_list = []
+    for word in list:
+        if word in BAD_WORDS:
+            censor_word = word[0] * '*'
+            censor_list.append(word.replace(word, censor_word))
+        else:
+            censor_list.append(word)
+
+    return censor_list
+
+
 
 
