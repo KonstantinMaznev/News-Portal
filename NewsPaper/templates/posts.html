@@ -23,7 +23,7 @@ Posts
 
            {% for post in posts %}
            <tr>
-               <td>{{ post.article_title }}</td>
+               <td>{{ post.article_title|censor }}</td>
                <td>{{ post.data_creation }}</td>
                <td>{{ post.text|truncatechars:20 }}</td>
            </tr>

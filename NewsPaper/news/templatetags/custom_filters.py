@@ -9,11 +9,11 @@ BAD_WORDS = [
 
 
 title = 'post.article_title'
-text = 'post.text'
+
 
 @register.filter()
-def censor(text):
-    list = text.split()
+def censor(title):
+    list = title.split()
     censor_list = []
     for word in list:
         if word in BAD_WORDS:
