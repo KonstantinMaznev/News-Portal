@@ -8,7 +8,7 @@ BAD_WORDS = [
 ]
 
 
-title = 'post.article_title'
+text = 'post.article_title'
 
 
 @register.filter()
@@ -23,6 +23,13 @@ def censor(title):
             censor_list.append(word)
 
     return censor_list
+
+
+# def censor(text,BAD_WORDS):
+    # for word in bad_words:
+    #     censored_word = word[0] * '*'
+    #     text = text.replace(word, censored_word)
+    # return text
 
 
 
