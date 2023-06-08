@@ -10,21 +10,14 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = [
+            'authors'
             'article_title',
             'text',
-            'post_categories',
-            'price',
-            'quantity',
+            'category_type',
+            'data_creation',
         ]
 
-    def clean(self):
-        cleaned_data = super().clean()
-        name = cleaned_data.get("name")
-        description = cleaned_data.get("description")
-
-        if name == description:
-            raise ValidationError(
-                "Описание не должно быть идентично названию."
-            )
-
-        return cleaned_data
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        post.quantity = 'NEWS'
+        return super().form_valid(form)
